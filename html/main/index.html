@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>html5 & css3 新特性</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        html,body{
+            height:100%;
+        }
+        body{
+            font-family: Microsoft Yahei, sans-serif;
+            font-size:13px;
+        }
+        .menu{
+            float: left;
+            box-sizing: border-box;
+            width:200px;
+            height:100%;
+            padding:10px;
+            border-right:2px solid #666;
+        }
+        .menu > li{
+            margin-bottom:20px;
+        }
+        .menu .title{
+            padding:3px 0;
+            font-size:14px;
+            line-height:20px;
+            color:#222;
+            cursor:pointer;
+        }
+        .title .arrow{
+            float: left;
+            margin:4px 5px 0 0;
+            vertical-align: middle;
+        }
+        .title .down{
+            transform: rotate(90deg);
+            -webkit-transform-origin:5px 7px;
+            -moz-transform-origin:5px 7px;
+            -ms-transform-origin:5px 7px;
+            -o-transform-origin:5px 7px;
+            transform-origin:5px 7px;
+            transition: transform linear 0.2s;
+        }
+        .menu .links{
+        }
+        .menu .link{
+            display: block;
+            margin-top:5px;
+            padding-left:14px;
+            height:20px;
+            line-height:20px;
+            font-size:small;
+            text-decoration: none;
+            color:#333;
+        }
+        .menu .active{
+            color:#39f;
+            cursor:pointer;
+        }
+        .display-area{
+            box-sizing: border-box;
+            margin-left:200px;
+            height:100%;
+            border:0;
+        }
+        .display-iframe{
+            display: block;
+            box-sizing: border-box;
+            width:100%;
+            height:100%;
+            border:0;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <ul class="menu">
+        <li>
+            <p class="title"><canvas class="arrow down" width="10" height="12"></canvas>css3 demo</p>
+            <p class="links">
+                <a class="link active" href="/html/tree/color.html">css3颜色</a>
+                <a class="link active" href="/html/tree/transform.html">css3转换</a>
+                <a class="link active" href="/html/tree/mask.html">css3遮罩层</a>
+                <a class="link active" href="/animate/index.html">css3动画</a>
+            </p>
+        </li>
+        <li>
+            <p class="title"><canvas class="arrow down" width="10" height="12"></canvas>html5 demo</p>
+            <p class="links">
+                <a class="link active" href="/html/tree/html5.html#video">video & audio</a>
+                <a class="link active" href="/html/tree/html5.html#canvas">canvas</a>
+                <a class="link active" href="/html/tree/html5.html#websocket">websocket</a>
+                <a class="link active" href="/html/tree/html5.html#storage">浏览器本地储存</a>
+                <a class="link active" href="/html/tree/html5.html#file_reader">文件读取</a>
+                <a class="link active" href="/html/tree/html5.html#csp">Content Security Policy</a>
+            </p>
+        </li>
+    </ul>
+    <div id="display_area" class="display-area"><iframe id="display_iframe" class="display-iframe" frameborder="0"></iframe></div>
+    <script src="../../js/jquery-1.12.1.min.js"></script>
+    <script>
+        $(function(){
+            var $arrow = $('.arrow');
+            $arrow.each(function(){
+                var context = this.getContext('2d');
+                context.beginPath();
+                context.lineTo(0, 0);
+                context.lineTo(10, 6);
+                context.lineTo(0, 12);
+                context.lineTo(0, 0);
+                context.fillStyle = '#222';
+                context.fill();
+            });
+            events();
+        });
+        function events(){
+            $('.title').on('click', function(){
+                var $arrow = $(this).find('.arrow'),
+                    $link = $(this).next();
+                if(!$arrow.hasClass('down')){
+                    $arrow.addClass('down');
+                    $link.slideDown(200);
+                }
+                else{
+                    $arrow.removeClass('down');
+                    $link.slideUp(200);
+                }
+            });
+            var $displayIframe = $('#display_iframe');
+            $('.links').on('click', '.active', function(e){
+                e.preventDefault();
+                var href = $(this).attr('href');
+                $displayIframe.attr('src', href);
+                $('.link').addClass('active');
+                $(this).removeClass('active');
+            });
+        }
+    </script>
+</body>
+</html>

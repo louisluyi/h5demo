@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>遮罩层实现</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            padding:20px 0 0 20px;
+            font-family: Microsoft Yahei, sans-serif;
+            font-size:13px;
+        }
+        h3{
+            font-size:16px;
+            color:#333;
+            padding: 10px 0;
+        }
+        h3 > span{
+            margin-left:20px;
+            color:#666;
+            font-size:13px;
+        }
+        .container{
+            position: relative;
+            margin-bottom: 20px;
+            width:200px;
+            height:300px;
+        }
+        .container .item{
+            position: absolute;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+        }
+        .container > img{
+        }
+        .mask-layer1{
+            -webkit-mask-image: -webkit-linear-gradient(left top, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 50%);
+        }
+        .mask-layer2{
+            -webkit-mask-image: -webkit-linear-gradient(right top, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 50%);
+        }
+    </style>
+</head>
+<body>
+    <h3>遮罩层实现图片拼接<span>supported: webkit内核，chrome或者移动浏览器</span></h3>
+    <div class="container">
+        <img class="item" src="../../img/01.jpg" />
+        <p class="mask-layer1 item">
+            <img class="item" src="../../img/02.jpg" />
+        </p>
+    </div>
+    <div class="container">
+        <img class="item" src="../../img/03.jpg" />
+        <p class="mask-layer2 item">
+            <img class="item" src="../../img/04.jpg" />
+        </p>
+    </div>
+</body>
+</html>

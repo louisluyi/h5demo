@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>album</title>
+    <link rel="stylesheet" href="../css/reset.css" type="text/css">
+    <style>
+        body{
+            font-family: Microsoft Yahei, sans-serif;
+            font-size:13px;
+        }
+        .album-list{
+            position:relative;
+            margin:50px auto 0 auto;
+            width:800px;
+            height:700px;
+            border:1px solid #39f;
+        }
+        .album-list .last-btn{
+            float: left;
+            margin:20px 0 0 20px;
+            color:#39f;
+        }
+        .album-list .next-btn{
+            float: right;
+            margin:20px 20px 0 0;
+            color:#39f;
+        }
+        .album-list img{
+            position: absolute;
+            left:50%;
+            display: none;
+            width:400px;
+            height:400px;
+        }
+        @keyframes current-left {
+            from{
+                top:50px;
+                margin-left:-200px;
+                opacity: 1;
+                transform: none;
+                -webkit-transform: none;
+                -moz-transform: none;
+            }
+            to{
+                top:70px;
+                margin-left:-250px;
+                opacity: 0.3;
+                transform: rotateY(60deg);
+                -webkit-transform: rotateY(60deg);
+                -moz-transform: rotateY(60deg);
+            }
+        }
+        /*@-webkit-keyframes current-left {
+            from{
+                left:50%;
+                opacity: 1;
+                transform: none;
+                -webkit-transform: none;
+                -moz-transform: none;
+            }
+            to{
+                left:30%;
+                opacity: 0.3;
+                transform: rotateY(60deg);
+                -webkit-transform: rotateY(60deg);
+                -moz-transform: rotateY(60deg);
+            }
+        }
+        @-moz-keyframes current-left {
+            from{
+                left:50%;
+                opacity: 1;
+                transform: none;
+                -webkit-transform: none;
+                -moz-transform: none;
+            }
+            to{
+                left:30%;
+                opacity: 0.3;
+                transform: rotateY(60deg);
+                -webkit-transform: rotateY(60deg);
+                -moz-transform: rotateY(60deg);
+            }
+        }*/
+        @keyframes right-current {
+            from{
+                top:70px;
+                margin-left:-150px;
+                opacity: 0.3;
+                transform: rotateY(-60deg);;
+                -webkit-transform: rotateY(-60deg);
+                -moz-transform: rotateY(-60deg);
+
+            }
+            to{
+                top:50px;
+                margin-left:-200px;
+                opacity: 1;
+                transform: none;
+                -webkit-transform: none;
+                -moz-transform: none;
+            }
+        }
+        /*@-webkit-keyframes right-current {
+            from{
+                left:70%;
+                opacity: 0.3;
+                transform: rotateY(-60deg);
+                -webkit-transform: rotateY(-60deg);
+                -moz-transform: rotateY(-60deg);
+
+            }
+            to{
+                left:50%;
+                opacity: 1;
+                transform: none;
+                -webkit-transform: none;
+                -moz-transform: none;
+            }
+        }
+        @-moz-keyframes right-current {
+            from{
+                left:70%;
+                opacity: 0.3;
+                transform: rotateY(-60deg);
+                -webkit-transform: rotateY(-60deg);
+                -moz-transform: rotateY(-60deg);
+
+            }
+            to{
+                left:50%;
+                opacity: 1;
+                transform: none;
+                -webkit-transform: none;
+                -moz-transform: none;
+            }
+        }*/
+        .album-list .left-img{
+            display: block;
+            top:70px;
+            margin-left:-250px;
+            opacity: 0.3;
+            transform: rotateY(60deg);
+            -webkit-transform: rotateY(60deg);
+            -moz-transform: rotateY(60deg);
+            cursor:pointer;
+            animation: current-left 0.5s;
+            -webkit-animation: current-left 0.5s;
+            -moz-animation: current-left 0.5s;
+        }
+        .album-list .current-img{
+            display: block;
+            top:50px;
+            margin-left:-200px;
+            opacity: 1;
+            transform: none;
+            -webkit-transform: none;
+            -moz-transform: none;
+            cursor:pointer;
+            animation: right-current 0.5s;
+            -webkit-animation: right-current 0.5s;
+            -moz-animation: right-current 0.5s;
+            z-index:2;
+        }
+        .album-list .right-img{
+            display: block;
+            top:70px;
+            margin-left:-150px;
+            opacity: 0.3;
+            transform: rotateY(-60deg);
+            -webkit-transform: rotateY(-60deg);
+            -moz-transform: rotateY(-60deg);
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="album-list">
+        <a href="javascript:void(0);" class="last-btn">上一张</a>
+        <a href="javascript:void(0);" class="next-btn">下一张</a>
+        <img src="../img/01.jpg" class="item"/>
+        <img src="../img/02.jpg" class="item"/>
+        <img src="../img/03.jpg" class="item"/>
+        <img src="../img/04.jpg" class="item"/>
+        <img src="../img/05.jpg" class="item"/>
+        <img src="../img/06.jpg" class="item"/>
+        <img src="../img/07.jpg" class="item"/>
+        <img src="../img/08.jpg" class="item"/>
+        <img src="../img/09.jpg" class="item"/>
+        <img src="../img/10.jpg" class="item"/>
+    </div>
+    <script src="../js/jquery-1.12.1.min.js"></script>
+    <script src="../js/album.js"></script>
+    <script>
+        new Album({
+            container:'.album-list',
+            leftClassName:'left-img',
+            rightClassName:'right-img',
+            currentClassName:'current-img',
+            lastSelector:'.last-btn',
+            nextSelector:'.next-btn'
+        }).init();
+    </script>
+</body>
+</html>

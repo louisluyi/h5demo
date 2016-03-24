@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2D & 3D变换</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            padding:20px 0 0 20px;
+            font-family: Microsoft Yahei, sans-serif;
+            font-size:13px;
+            perspective: 800px;
+            -webkit-perspective: 800px;
+            -moz-perspective: 800px;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+        }
+        h3{
+            font-size:16px;
+            color:#333;
+            padding: 10px 0;
+        }
+        h3 > span, a > span{
+            margin-left:20px;
+            color:#666;
+            font-size:13px;
+        }
+        .separate{
+            margin-bottom:20px;
+            height:20px;
+            border-bottom:2px dashed #666;
+            clear: both;
+        }
+        .normal{
+            float: left;
+            margin-right:100px;
+            width:200px;
+            height:300px;
+        }
+        .normal img{
+            width:100%;
+        }
+        .scale2d{
+            transform: scale(0.5, 0.5);
+            -webkit-transform: scale(0.5, 0.5);
+            -moz-transform: scale(0.5, 0.5);
+            -ms-transform: scale(0.5, 0.5);
+            transform-origin: 0 0;
+        }
+        .rotate2d{
+            transform: rotate(30deg);
+            -webkit-transform: rotate(30deg);
+            -moz-transform: rotate(30deg);
+            -ms-transform: rotate(30deg);
+        }
+        .rotate3d{
+            margin-top:20px;
+            transform: scale(0.5, 1) rotateY(30deg);
+            -webkit-transform: scale(0.5, 1) rotateY(30deg);
+            -moz-transform: scale(0.5, 1) rotateY(30deg);
+            -ms-transform: scale(0.5, 1) rotateY(30deg);
+            opacity: 0.5;
+            transform-origin: 0 0;
+        }
+        .compare{
+            transform: translate(-200px, 0);
+        }
+        .link{
+            float: left;
+            font-size:15px;
+            text-decoration: none;
+            color:blue;
+        }
+    </style>
+</head>
+<body>
+    <h3>2D变换<span>supported: IE9+</span></h3>
+    <img class="normal" src="../../img/01.jpg" />
+    <img class="normal scale2d" src="../../img/01.jpg" />
+    <img class="normal rotate2d" src="../../img/01.jpg" />
+    <p class="separate"></p>
+
+    <h3>3D变换<span>supported: IE10+</span></h3>
+    <img class="normal" src="../../img/01.jpg" />
+    <img src="../../img/01.jpg" class="normal rotate3d"/>
+    <img class="normal compare" src="../../img/01.jpg" />
+
+    <a href="http://www.zhangxinxu.com/study/201209/pictures-3d-slide-view.html" class="link">复杂3D变换demo<span>(IE不支持，考虑移动浏览器)</span></a>
+</body>
+</html>
