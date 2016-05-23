@@ -1,0 +1,24 @@
+{
+  "name": "h5demo",
+  "version": "1.0.0",
+  "description": "h5demo for mobile browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@ssh.github.com:louisluyi/h5demo.git"
+  },
+  "keywords": [
+    "mobile"
+  ],
+  "author": "louis",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+  "devDependencies": {
+    "mustache": "^2.2.1"
+  }
+}

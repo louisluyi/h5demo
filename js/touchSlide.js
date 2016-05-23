@@ -111,7 +111,7 @@ TouchSlide.prototype.sortSlideList = function() {
         var nextIndex = attrIndex + 1;
         nextIndex = nextIndex < self.slideList.length ? nextIndex : 0;
         if($slideItems.length > self.slideList.length) {
-            //去掉最后一张图片，保证图片数量不超过原来数量 + 1
+            //去掉第一张图片，保证图片数量不超过原来数量 + 1
             $slideItems.first().remove();
             self.posX -= self.itemWidth;
             self.$slideContainer.css('left', - self.posX + 'px');
