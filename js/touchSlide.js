@@ -21,7 +21,7 @@ var TouchSlide = function(params){
     if(params.dotContainer) this.$dotContainer = $(params.dotContainer);
     this.currentIndex = 0; //当前轮播图在其parent的下标
     this.slideList = []; //按原来的顺序储存每一张轮播图
-    this.itemWidth = this.$slideContainer.children().outerWidth(); //轮播图宽度
+    this.itemWidth = this.$slideContainer.children().width(); //轮播图宽度
     this.speed = this.itemWidth / (params.speed || 100) * 16; //换算成轮播图切换时每帧的位移
     this.posX = 0; //轮播图container的left位移值，取正值
     this.allowTouch = true;
@@ -55,13 +55,15 @@ TouchSlide.prototype.eventHandler = function(){
     }
     var touchstart = function(e){
         if(!self.allowTouch) return;
+        e = e.originalEvent || e;
         beginTime = new Date().getTime();
-        beginX = e.originalEvent.changedTouches[0].clientX;
+        beginX = e.touches[0].clientX;
         self.$slideContainer.on('touchmove', delayFunc(touchmove));
     }
     var touchmove = function(e){
         if(!self.allowTouch) return;
-        endX = e.originalEvent.changedTouches[0].clientX;
+        e = e.originalEvent || e;
+        endX = e.touches[0].clientX;
         endPosX = self.posX - endX + beginX;
         self.$slideContainer.css('left', -endPosX + 'px');
     };
