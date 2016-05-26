@@ -19,6 +19,7 @@
     "express": "^4.13.4"
   },
   "devDependencies": {
-    "mustache": "^2.2.1"
+    "mustache": "^2.2.1",
+    "mustache-express": "^1.2.2"
   }
 }
