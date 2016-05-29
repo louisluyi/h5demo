@@ -17,24 +17,32 @@
         }
         .slide-list{
             position: relative;
-            /*left: -200px;*/
+            height:950px;
             white-space: nowrap;
             font-size: 0;
         }
         .slide-list > li{
             display: inline-block;
             width:720px;
-            height:900px;
+            height:100%;
         }
         .slide-list > li > img{
             display: block;
             width: 100%;
-            height: 100%;
+            height: 900px;
+        }
+        .slide-list > li > p {
+            height:50px;
+            line-height: 50px;
+            font-size:30px;
+            color:#f00;
+            font-weight: bolder;
+            text-align: center;
         }
         .dot-list{
             position: absolute;
             right: 15px;
-            bottom: 15px;
+            bottom: 65px;
         }
         .dot-list > li {
             float: left;
@@ -64,20 +72,23 @@
 <body>
     <div class="container">
         <ul class="slide-list">
-            <li><img src="../img/01.jpg"></li>
-            <li><img src="../img/02.jpg"></li>
-            <li><img src="../img/03.jpg"></li>
-            <li><img src="../img/04.jpg"></li>
-            <li><img src="../img/05.jpg"></li>
+            <li><img src="../img/01.jpg"><p>1</p></li>
+            <li><img src="../img/02.jpg"><p>2</p></li>
+            <li><img src="../img/03.jpg"><p>3</p></li>
+            <li><img src="../img/04.jpg"><p>4</p></li>
+            <li><img src="../img/05.jpg"><p>5</p></li>
         </ul>
         <ul class="dot-list"><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li></ul>
     </div>
+    <script src="http://192.168.1.101:1234/target/target-script-min.js#anonymous"></script>
     <script src="../js/zepto.min.js"></script>
-    <script src="../js/touchSlide.js?ver={{timestamp}}"></script>
+    <script src="../js/touchSlide_v2.js?ver={{timestamp}}"></script>
     <script>
-        new TouchSlide({
-            slideContainer: $('.slide-list'),
-            dotContainer: $('.dot-list')
+        $(window).on('ready', function(){
+            new TouchSlide({
+                slideContainer: $('.slide-list'),
+                dotContainer: $('.dot-list')
+            });
         });
     </script>
 </body>

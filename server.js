@@ -4,8 +4,16 @@
 'use strict';
 
 let express = require('express');
-let mustacheExpress = require('mustache-express');
+let mustacheExpress = require('mustache-express')();
+let lruCache = require('lru-cache');
 let app = express();
+mustacheExpress.cache = lruCache(
+    {
+        max: 50000,
+        length: function (n) { return n.data.length },
+        maxAge: 0
+    }
+);
 
 //static directory
 ['css', 'html', 'img', 'js'].forEach(function(name){
@@ -14,10 +22,11 @@ let app = express();
     }));
 });
 
-app.engine('mustache', mustacheExpress());
+app.engine('mustache', mustacheExpress);
 app.set('view engine', 'mustache');
 app.set('view cache', false);
 app.set('views', __dirname + '/mustache');
+
 app.get('/mustache/:path', function(req, res){
     res.render(req.params.path, {timestamp: new Date().getTime()});
 });

@@ -22,10 +22,11 @@ var TouchSlide = function(params) {
     this.currentIndex = 0; //当前轮播图在其parent的下标
     this.slideList = []; //按原来的顺序储存每一张轮播图
     this.itemWidth = this.$slideContainer.children().width(); //轮播图宽度
-    this.speed = this.itemWidth / (params.speed || 200) * 16; //换算成轮播图切换时每帧的位移
+    this.speed = parseInt(this.itemWidth / (params.speed || 200) * 16); //换算成轮播图切换时每帧的位移
     this.posX = 0; //轮播图container的left位移值，取正值
     this.allowTouch = true;
-    this.signSlideList();
+    this.addSlideItem();
+    this.signSlideItem();
     this.chooseCurrentDot();
     this.sortSlideList();
     this.eventHandler();
@@ -57,9 +58,8 @@ TouchSlide.prototype.eventHandler = function() {
         status = 1;
         e = e.originalEvent || e;
         endX = e.touches[0].clientX * ratio;
-        endPosX = self.posX - endX + beginX;
-        self.translateContainer(-endPosX);
-        //self.$slideContainer.css('left', -endPosX + 'px');
+        endPosX = self.posX + endX - beginX;
+        self.translate3d(self.$slideContainer, endPosX);
     };
     var touchend = function() {
         if (!self.allowTouch || status !== 1) return;
@@ -72,10 +72,35 @@ TouchSlide.prototype.eventHandler = function() {
         .on('touchend touchcancel', touchend);
 };
 
-TouchSlide.prototype.signSlideList = function() {
+/**
+ * 如果图片数目少于3，则每个复制一份添加到container
+ */
+TouchSlide.prototype.addSlideItem = function() {
+    var self = this,
+        $slideItem = self.$slideContainer.children();
+    if($slideItem.length < 3) {
+        $slideItem.each(function(i, e){
+            $(e).appendTo(self.$slideContainer);
+        });   
+    }
+}
+
+/**
+ * 定义每张图片并且标记他们的次序
+ */
+TouchSlide.prototype.signSlideItem = function() {
     var self = this;
+    self.$slideContainer.css({
+        'position':'relative',
+        'left':0,
+        'top':0
+    })
     self.$slideContainer.children().each(function(i, e) {
         self.slideList.push(e);
+        $(e).css({
+            'position':'absolute',
+            'top': 0
+        })
         $(e).attr('data-slide-index', i);
     });
 };
@@ -83,45 +108,35 @@ TouchSlide.prototype.signSlideList = function() {
 TouchSlide.prototype.sortSlideList = function() {
     var self = this,
         $slideItems = self.$slideContainer.children(),
-        attrIndex;
-    if (self.currentIndex == 0) {
-        //当前轮播的是第一张图片时，需要copy上一张图片到第一张图的位置
-        attrIndex = $slideItems.eq(self.currentIndex).attr('data-slide-index');
-        attrIndex = parseInt(attrIndex);
-        //获取上一张图片的下标，如果 < 0，则获取最后一张
-        var lastIndex = attrIndex - 1;
-        lastIndex = lastIndex >= 0 ? lastIndex : self.slideList.length - 1;
-        if ($slideItems.length > self.slideList.length) {
-            //去掉最后一张图片，保证图片数量不超过原来数量 + 1
-            $slideItems.last().remove();
+        lastIndex = self.currentIndex > 0 ? self.currentIndex - 1 : $slideItems.length - 1,
+        nextIndex = self.currentIndex < $slideItems.length - 1 ? self.currentIndex + 1 : 0;
+    self.posX = 0;
+    self.translate3d(self.$slideContainer, self.posX);
+    $slideItems.each(function(i, e){
+        switch (i){
+            case self.currentIndex:
+                $(e).css({
+                    'left': self.posX + 'px',
+                    'display': 'block'
+                })
+                break;
+            case lastIndex:
+                $(e).css({
+                    'left': self.posX - self.itemWidth + 'px',
+                    'display': 'block'
+                })
+                break;
+            case nextIndex:
+                $(e).css({
+                    'left': self.posX + self.itemWidth + 'px',
+                    'display': 'block'
+                })
+                break;
+            default:
+                $(e).css('display', 'none');
+                break;
         }
-        //复制该图片到第一张的位置
-        $(self.slideList[lastIndex]).clone().prependTo(self.$slideContainer);
-        self.posX += self.itemWidth;
-        window.requestAnimationFrame(function(){
-            //将位置移动放在后面，
-            self.translateContainer(-self.posX);
-        });
-        self.currentIndex++;
-    } else if (self.currentIndex == $slideItems.length - 1) {
-        //当前轮播的是最后一张图片时，需要copy下一张图片到最后一张图的位置
-        attrIndex = $slideItems.eq(self.currentIndex).attr('data-slide-index');
-        attrIndex = parseInt(attrIndex);
-        //获取下一张图片的下标，如果 >= length，则获取第一张
-        var nextIndex = attrIndex + 1;
-        nextIndex = nextIndex < self.slideList.length ? nextIndex : 0;
-        if ($slideItems.length > self.slideList.length) {
-            //去掉最后一张图片，保证图片数量不超过原来数量 + 1
-            $slideItems.first().remove();
-            self.posX -= self.itemWidth;
-            self.currentIndex--;
-            window.requestAnimationFrame(function(){
-                self.translateContainer(-self.posX);
-            });
-        }
-        //复制该图片到最后一张的位置
-        $(self.slideList[nextIndex]).clone().appendTo(self.$slideContainer);
-    }
+    });
 };
 
 TouchSlide.prototype.calcNextItem = function(distance, time) {
@@ -129,49 +144,38 @@ TouchSlide.prototype.calcNextItem = function(distance, time) {
         d = 10,
         t = 200;
     if (Math.abs(distance) > d && time > 0 && time < t) {
-        //用户操作符合短时间且滑动一定距离时，认为用户想要切换到下（上）一张图片
-        distance > 0 ? self.slideToLeftItem() : self.slideToRightItem();
+        //用户操作符合短时间且滑动一定距离时，认为用户想要切换到上（下）一张图片
+        distance > 0 ? self.slideToLeftItem(self.currentIndex - 1) : self.slideToRightItem(self.currentIndex + 1);
     }
     else {
         //否则根据当前轮播图的位置判定应该滑动到哪一张图片
-        var index = parseInt(self.posX / self.itemWidth);
-        if ((index + 0.5) * self.itemWidth < self.posX) {
-            //如果当前位置超过图片1/2宽度时，认为用户想要切换到下一张图片
-            index++;
-            self.slideToRightItem(index);
-        } else {
-            self.slideToLeftItem(index);
+        if(self.posX < - 0.5 * self.itemWidth){
+            self.slideToRightItem(self.currentIndex + 1);
+        }
+        else if(self.posX > 0.5 * self.itemWidth){
+            self.slideToLeftItem(self.currentIndex - 1);
+        }
+        else{
+            distance > 0 ? self.slideToLeftItem() : self.slideToRightItem();
         }
     }
 };
 
+/**
+ * 向右滑动
+ * @param index 下一张图片下标，默认为当前下标
+ */
 TouchSlide.prototype.slideToRightItem = function(index) {
     var self = this,
         endX;
-    index = index >= 0 ? index : self.currentIndex + 1;
-    endX = self.itemWidth * index;
-    if (index >= self.$slideContainer.children().length) return;
-    var animate = function() {
-        if (self.posX >= endX) {
-            self.slideEnd(index);
-            return;
-        }
-        self.posX += self.speed;
-        if (self.posX >= endX) self.posX = endX;
-        self.translateContainer(-self.posX);
-        //self.$slideContainer.css('left', -self.posX + 'px');
-        window.requestAnimationFrame(animate);
-    };
-    window.requestAnimationFrame(animate);
-    self.allowTouch = false; //动画开始不允许touch
-};
-
-TouchSlide.prototype.slideToLeftItem = function(index) {
-    var self = this,
-        endX;
-    index = index >= 0 ? index : self.currentIndex - 1;
-    endX = self.itemWidth * index;
-    if (index < 0) return;
+    if(isNaN(index)){
+        index = self.currentIndex;
+        endX = 0;
+    }
+    else{
+        endX = -self.itemWidth;
+    }
+    if (index >= self.$slideContainer.children().length) index = 0;
     var animate = function() {
         if (self.posX <= endX) {
             self.slideEnd(index);
@@ -179,8 +183,36 @@ TouchSlide.prototype.slideToLeftItem = function(index) {
         }
         self.posX -= self.speed;
         if (self.posX <= endX) self.posX = endX;
-        self.translateContainer(-self.posX);
-        //self.$slideContainer.css('left', -self.posX + 'px');
+        self.translate3d(self.$slideContainer, self.posX);
+        window.requestAnimationFrame(animate);
+    };
+    window.requestAnimationFrame(animate);
+    self.allowTouch = false; //动画开始不允许touch
+};
+
+/**
+ * 向左滑动
+ * @param index 上一张图片下标，默认为当前下标
+ */
+TouchSlide.prototype.slideToLeftItem = function(index) {
+    var self = this,
+        endX;
+    if(isNaN(index)){
+        index = self.currentIndex;
+        endX = 0;
+    }
+    else{
+        endX = self.itemWidth;
+    }
+    index = index >= 0 ? index : self.$slideContainer.children().length - 1;
+    var animate = function() {
+        if (self.posX >= endX) {
+            self.slideEnd(index);
+            return;
+        }
+        self.posX += self.speed;
+        if (self.posX >= endX) self.posX = endX;
+        self.translate3d(self.$slideContainer, self.posX);
         window.requestAnimationFrame(animate);
     };
     window.requestAnimationFrame(animate);
@@ -211,15 +243,11 @@ TouchSlide.prototype.chooseCurrentDot = function() {
     });
 };
 
-TouchSlide.prototype.translateContainer = function(x){
-    var self = this,
-        transform3d = 'translate3d(' + x + 'px, 0, 0)';
-    self.$slideContainer.css({
-        'transform': transform3d,
-        '-webkit-transform': transform3d
-    });
-    //self.$slideContainer.css('left', x + 'px');
+TouchSlide.prototype.translate3d = function($elem, x){
+    var transform3d = 'translate3d(' + x + 'px, 0, 0)';
+    $elem.css('transform', transform3d);
 };
+
 
 window.requestAnimationFrame = window.requestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
