@@ -48,6 +48,7 @@ TouchSlide.prototype.eventHandler = function() {
         beginX = e.touches[0].clientX * ratio;
     };
     var touchmove = function(e) {
+        console.log(new Date().getTime());
         if(e.preventDefault) {
             e.preventDefault();
         }
@@ -58,7 +59,7 @@ TouchSlide.prototype.eventHandler = function() {
         status = 1;
         e = e.originalEvent || e;
         endX = e.touches[0].clientX * ratio;
-        endPosX = self.posX + endX - beginX;
+        endPosX = parseInt(self.posX + endX - beginX);
         self.translate3d(self.$slideContainer, endPosX);
     };
     var touchend = function() {
@@ -99,6 +100,7 @@ TouchSlide.prototype.signSlideItem = function() {
         self.slideList.push(e);
         $(e).css({
             'position':'absolute',
+            'left':0,
             'top': 0
         })
         $(e).attr('data-slide-index', i);
@@ -115,25 +117,19 @@ TouchSlide.prototype.sortSlideList = function() {
     $slideItems.each(function(i, e){
         switch (i){
             case self.currentIndex:
-                $(e).css({
-                    'left': self.posX + 'px',
-                    'display': 'block'
-                })
+                self.translate3d($(e), self.posX);
+                $(e).show();
                 break;
             case lastIndex:
-                $(e).css({
-                    'left': self.posX - self.itemWidth + 'px',
-                    'display': 'block'
-                })
+                self.translate3d($(e), self.posX - self.itemWidth);
+                $(e).show();
                 break;
             case nextIndex:
-                $(e).css({
-                    'left': self.posX + self.itemWidth + 'px',
-                    'display': 'block'
-                })
+                self.translate3d($(e), self.posX + self.itemWidth);
+                $(e).show();
                 break;
             default:
-                $(e).css('display', 'none');
+                $(e).hide();
                 break;
         }
     });
@@ -245,7 +241,10 @@ TouchSlide.prototype.chooseCurrentDot = function() {
 
 TouchSlide.prototype.translate3d = function($elem, x){
     var transform3d = 'translate3d(' + x + 'px, 0, 0)';
-    $elem.css('transform', transform3d);
+    $elem.css({
+        '-webkit-transform': transform3d,
+        'transform': transform3d
+    });
 };
 
 

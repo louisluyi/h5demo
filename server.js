@@ -3,10 +3,12 @@
  */
 'use strict';
 
+let argv = require('./config/argv');
 let express = require('express');
 let mustacheExpress = require('mustache-express')();
 let lruCache = require('lru-cache');
 let app = express();
+let env = process.argv ? process.argv['env'] : null;
 mustacheExpress.cache = lruCache(
     {
         max: 50000,
@@ -28,7 +30,12 @@ app.set('view cache', false);
 app.set('views', __dirname + '/mustache');
 
 app.get('/mustache/:path', function(req, res){
-    res.render(req.params.path, {timestamp: new Date().getTime()});
+    var result = {};
+    result.timestamp = new Date().getTime();
+    if(req.header('user-agent').indexOf('Chrome/38.0.0.0') > 0 && argv['env'] === 'dev'){
+        result.debug = true;
+    }
+    res.render(req.params.path, result);
 });
 
 app.listen(8088, function(){
