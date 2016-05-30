@@ -38,6 +38,7 @@ app.get('/mustache/:path', function(req, res){
     res.render(req.params.path, result);
 });
 
-app.listen(8088, function(){
-    console.log('express begin');
+const port = argv.p || 8088;
+app.listen(port, function(){
+    console.log('express begin at ' + port);
 });
